@@ -21,10 +21,33 @@ DBConnection(); // Database Connection
 initCronJobs(); // Cron Job Initialization
 
 // Global Middlewares
-app.use(cors({ origin: env.ALLOWED_ORIGINS || '*' }));
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: '*',
+    credentials: true,
+  })
+);
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://www.gstatic.com",
+          "https://www.google-analytics.com",
+        ],
+        connectSrc: ["'self'", "https://www.google-analytics.com"],
+      },
+    },
+  })
+);
 
 // Define Routes
 app.use("/v1/", [
@@ -33,6 +56,15 @@ app.use("/v1/", [
     generalRoutes,
     propertyRoutes
 ]);
+
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", 
+        "connect-src 'self' https://content-analyticsreporting.googleapis.com https://teintoo.com; " +
+        "script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com;"
+    );
+    next();
+});
+
 
 // Error Handler
 app.use((request, response, next) => next(httpErrors(404)));

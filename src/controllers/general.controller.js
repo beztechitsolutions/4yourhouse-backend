@@ -34,6 +34,29 @@ export const contactMessage = async (request, response) => {
 }
 
 
+export const replyContactMessage = async (request, response) => {
+    try {
+        if (request.body) {
+            await sendMail({
+                from: env.MAILING_USERNAME,
+                to: request.body?.email,
+                subject: request.body?.subject,
+                html: request.body?.message
+            });
+        }
+
+        response.status(200).json({ status: 200, message: "Your message successfully sent" });
+    } catch (error) {
+        if (error.name === 'ValidationError' || error.name === 'MongoServerError') {
+            response.status(422).json({ status: 422, errors: handleValidation(error, "Contact") });
+        } else {
+            console.log(error);
+            response.status(500).json({ status: 500, message: "Failed to send message" });
+        }
+    }
+}
+
+
 export const getContacts = async (request, response) => {
     try {
         const contacts = await Contact.find();

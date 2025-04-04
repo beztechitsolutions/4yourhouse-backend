@@ -9,7 +9,18 @@ import { uploadFileOnCloud, deleteFileFromCloud } from '../common/utils/uploadFi
 // ========== Get User Profile ==========
 export const getCurrentUser = async (request, response) => {
 	try {
-		const profile = await Users.findById(request?.user._id).populate(["recentlyViewed", "wishlist"]);
+		const profile = await Users.findById(request?.user._id).populate({
+                path: "recentlyViewed",
+                model: "Properties",
+                foreignField: "listingKey",
+                localField: "recentlyViewed",
+            })
+            .populate({
+                path: "wishlist",
+                model: "Properties",
+                foreignField: "listingKey",
+                localField: "wishlist",
+            });
 		response.status(200).json({ status: 200, profile });
 	} catch (error) {
 		console.log(error);

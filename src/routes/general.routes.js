@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { contactMessage, getUsers, getSingleUser, getContacts, newsletter, getNewsletter, consultation, getConsultation, getImageSource } from '../controllers/general.controller.js';
+import { contactMessage, replyContactMessage, getUsers, getSingleUser, getContacts, newsletter, getNewsletter, consultation, getConsultation, getImageSource } from '../controllers/general.controller.js';
 
 const router = Router();
 
 router.post('/contact', contactMessage);
+router.post('/contact-reply', replyContactMessage);
 router.post('/newsletter', newsletter);
 router.post('/consultation', consultation);
 

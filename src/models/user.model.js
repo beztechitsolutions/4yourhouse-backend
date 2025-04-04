@@ -11,13 +11,6 @@ const userSchema = new Schema(
         fullName: {
             type: String,
             required: [true, "Name is required"],
-            minlength: [3, "Name should be at least 3 characters long"],
-            validate: {
-                validator: function (value) {
-                    return /^[a-zA-Z\s]+$/.test(value);
-                },
-                message: "Name should only contain letters and spaces."
-            }
         },
         email: {
             type: String,
