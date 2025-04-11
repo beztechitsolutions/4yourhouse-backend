@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import generalRoutes from './routes/general.routes.js';
 import propertyRoutes from './routes/property.routes.js';
+import blogRoutes from './routes/blog.routes.js';
 
 const app = express();
 
@@ -25,44 +26,45 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-  cors({
-    origin: '*',
-    credentials: true,
-  })
+	cors({
+		origin: '*',
+		credentials: true,
+	})
 );
 
 app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "https://www.gstatic.com",
-          "https://www.google-analytics.com",
-        ],
-        connectSrc: ["'self'", "https://www.google-analytics.com"],
-      },
-    },
-  })
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'"],
+				scriptSrc: [
+					"'self'",
+					"'unsafe-inline'",
+					"'unsafe-eval'",
+					"https://www.gstatic.com",
+					"https://www.google-analytics.com",
+				],
+				connectSrc: ["'self'", "https://www.google-analytics.com"],
+			},
+		},
+	})
 );
 
 // Define Routes
 app.use("/v1/", [
-    authRoutes,
-    userRoutes,
-    generalRoutes,
-    propertyRoutes
+	authRoutes,
+	userRoutes,
+	generalRoutes,
+	propertyRoutes,
+	blogRoutes
 ]);
 
 app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", 
-        "connect-src 'self' https://content-analyticsreporting.googleapis.com https://teintoo.com; " +
-        "script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com;"
-    );
-    next();
+	res.setHeader("Content-Security-Policy",
+		"connect-src 'self' https://content-analyticsreporting.googleapis.com https://teintoo.com; " +
+		"script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com;"
+	);
+	next();
 });
 
 
@@ -74,9 +76,9 @@ app.use((error, request, response, next) => response.status(error.status || 500)
 const server = app.listen(env.PORT, () => console.log(`Server running on PORT ${env.PORT}`));
 
 process.on("SIGINT", async () => {
-    console.log("Shutting down server...");
-    server.close(() => {
-        console.log("Server closed. Exiting process...");
-        process.exit(0);
-    });
+	console.log("Shutting down server...");
+	server.close(() => {
+		console.log("Server closed. Exiting process...");
+		process.exit(0);
+	});
 });
